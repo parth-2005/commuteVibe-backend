@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../prisma/prisma.service.js'
 import { CreateRouteDto } from './dto/create-route.dto.js'
-import { Prisma } from '../../generated/prisma/client.js'
+import type { Prisma } from '@prisma/client'
 
 @Injectable()
 export class RoutesService {
@@ -32,6 +32,9 @@ export class RoutesService {
   }
 
   async getRouteHistory(userId: string) {
-    return this.getUserRoutes(userId, undefined as any)
+    return this.prisma.route.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+    })
   }
 }
