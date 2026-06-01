@@ -1,0 +1,106 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─────────────────────────────────────────
+// USER
+// ─────────────────────────────────────────
+model User {
+  id          String   @id @default(uuid())
+  firebaseUid String   @unique @map("firebase_uid")
+  name        String
+  email       String   @unique
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  alarm        Alarm?
+  crowdReports CrowdReport[]
+  routes       Route[]
+
+  @@map("users")
+}
+
+// ─────────────────────────────────────────
+// ALARM
+// Single alarm per user at a time
+// Coordinate based — rings within radius_meters of destination
+// ─────────────────────────────────────────
+model Alarm {
+  id             String   @id @default(uuid())
+  userId         String   @unique @map("user_id") // unique = one alarm per user
+  label          String // "Motera Stadium", "Home", etc.
+  destLat        Float    @map("dest_lat")
+  destLng        Float    @map("dest_lng")
+  radiusMeters   Int      @default(300) @map("radius_meters")
+  isActive       Boolean  @default(true) @map("is_active")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  // Relation
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("alarms")
+}
+
+// ─────────────────────────────────────────
+// CROWD REPORT
+// Raw coordinates — no station dependency
+// level: 1 = low, 2 = medium, 3 = high
+// Expires after 30 mins — handled at query level
+// ─────────────────────────────────────────
+model CrowdReport {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  lat       Float
+  lng       Float
+  level     Int // 1 = LOW, 2 = MEDIUM, 3 = HIGH
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relation
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([lat, lng]) // spatial queries will be fast
+  @@index([createdAt]) // for expiry filtering
+  @@map("crowd_reports")
+}
+
+// ─────────────────────────────────────────
+// ROUTE
+// Stored for AI training — multi leg journeys
+// Each leg is stored as a JSON array
+// ─────────────────────────────────────────
+model Route {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  originLat   Float    @map("origin_lat")
+  originLng   Float    @map("origin_lng")
+  destLat     Float    @map("dest_lat")
+  destLng     Float    @map("dest_lng")
+
+  // Multi-leg journey stored as JSON
+  // Example: [{mode: "BRTS", from: "Ranip", to: "Motera", duration: 20}]
+  legs        Json     @default("[]")
+
+  transitMode String   @map("transit_mode") // METRO, BRTS, RICKSHAW, RAPIDO, UBER
+  durationMin Int      @map("duration_min") // total journey time in minutes
+  chosenByAi  Boolean  @default(false) @map("chosen_by_ai") // was this AI suggested?
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  // Relation
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([createdAt])
+  @@map("routes")
+}
