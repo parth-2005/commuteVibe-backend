@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
-import { PrismaService } from '../prisma/prisma.service'
-import { CreateAlarmDto } from './dto/create-alarm.dto'
-import { UpdateAlarmDto } from './dto/update-alarm.dto'
+import { PrismaService } from '../prisma/prisma.service.js'
+import { CreateAlarmDto } from './dto/create-alarm.dto.js'
+import { UpdateAlarmDto } from './dto/update-alarm.dto.js'
 
 @Injectable()
 export class AlarmsService {

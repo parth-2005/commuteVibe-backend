@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common'
-import { RoutesService } from './routes.service'
-import { CreateRouteDto } from './dto/create-route.dto'
-import { JwtGuard } from '../auth/guards/jwt.guard'
-import { CurrentUser } from '../common/decorators/current-user.decorator'
+import { RoutesService } from './routes.service.js'
+import { CreateRouteDto } from './dto/create-route.dto.js'
+import { JwtGuard } from '../auth/guards/jwt.guard.js'
+import { CurrentUser } from '../common/decorators/current-user.decorator.js'
 
 @Controller('routes')
 @UseGuards(JwtGuard)

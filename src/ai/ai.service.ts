@@ -1,6 +1,6 @@
 import { Injectable, ServiceUnavailableException } from '@nestjs/common'
-import { RoutesService } from '../routes/routes.service'
-import { CrowdService } from '../crowd/crowd.service'
+import { RoutesService } from '../routes/routes.service.js'
+import { CrowdService } from '../crowd/crowd.service.js'
 
 @Injectable()
 export class AiService {

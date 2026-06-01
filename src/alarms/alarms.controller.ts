@@ -1,9 +1,9 @@
 import { Body, Controller, Delete, Get, Patch, Post, UseGuards } from '@nestjs/common'
-import { AlarmsService } from './alarms.service'
-import { CreateAlarmDto } from './dto/create-alarm.dto'
-import { UpdateAlarmDto } from './dto/update-alarm.dto'
-import { JwtGuard } from '../auth/guards/jwt.guard'
-import { CurrentUser } from '../common/decorators/current-user.decorator'
+import { AlarmsService } from './alarms.service.js'
+import { CreateAlarmDto } from './dto/create-alarm.dto.js'
+import { UpdateAlarmDto } from './dto/update-alarm.dto.js'
+import { JwtGuard } from '../auth/guards/jwt.guard.js'
+import { CurrentUser } from '../common/decorators/current-user.decorator.js'
 
 @Controller('alarms')
 @UseGuards(JwtGuard)

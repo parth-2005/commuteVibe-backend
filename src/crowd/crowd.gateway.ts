@@ -1,23 +1,19 @@
-import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { WebSocketGateway, WebSocketServer, OnGatewayConnection, OnGatewayDisconnect } from '@nestjs/websockets'
-import { Server } from 'socket.io'
+import { Server, Socket } from 'socket.io'
 
 @WebSocketGateway({ namespace: '/crowd', cors: { origin: '*' } })
 @Injectable()
-export class CrowdGateway implements OnModuleInit, OnGatewayConnection, OnGatewayDisconnect {
+export class CrowdGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server
 
-  onModuleInit() {
-    // gateway init
+  handleConnection(client: Socket) {
+    console.log(`Client connected: ${client.id}`)
   }
 
-  onGatewayConnection() {
-    // client connected
-  }
-
-  onGatewayDisconnect() {
-    // client disconnected
+  handleDisconnect(client: Socket) {
+    console.log(`Client disconnected: ${client.id}`)
   }
 
   broadcastNewReport(report: any) {

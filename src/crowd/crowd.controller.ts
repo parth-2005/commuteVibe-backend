@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common'
-import { CrowdService } from './crowd.service'
-import { CreateCrowdReportDto } from './dto/create-crowd-report.dto'
-import { JwtGuard } from '../auth/guards/jwt.guard'
-import { CurrentUser } from '../common/decorators/current-user.decorator'
-import { CrowdGateway } from './crowd.gateway'
+import { CrowdService } from './crowd.service.js'
+import { CreateCrowdReportDto } from './dto/create-crowd-report.dto.js'
+import { JwtGuard } from '../auth/guards/jwt.guard.js'
+import { CurrentUser } from '../common/decorators/current-user.decorator.js'
+import { CrowdGateway } from './crowd.gateway.js'
 
 @Controller('crowd')
 @UseGuards(JwtGuard)

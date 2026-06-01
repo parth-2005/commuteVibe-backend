@@ -1,6 +1,6 @@
-import { Injectable, TooManyRequestsException } from '@nestjs/common'
-import { PrismaService } from '../prisma/prisma.service'
-import { CreateCrowdReportDto } from './dto/create-crowd-report.dto'
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
+import { PrismaService } from '../prisma/prisma.service.js'
+import { CreateCrowdReportDto } from './dto/create-crowd-report.dto.js'
 
 const LAT_DELTA = 0.0045
 const LNG_DELTA = 0.0055
@@ -16,7 +16,7 @@ export class CrowdService {
     })
 
     if (last && last.createdAt.getTime() > Date.now() - 5 * 60 * 1000) {
-      throw new TooManyRequestsException('Report too soon. Wait 5 minutes.')
+      throw new HttpException('Report too soon. Wait 5 minutes.', HttpStatus.TOO_MANY_REQUESTS)
     }
 
     const report = await this.prisma.crowdReport.create({
